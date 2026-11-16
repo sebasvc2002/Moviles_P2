@@ -15,8 +15,6 @@ const _recipe = RecipeEntry(
   ingredients: 'Totopos\n\nSalsa verde',
   instructions: 'Calentar la salsa\nAgregar totopos',
   imagePath: '',
-  latitude: 19.43,
-  longitude: -99.13,
   isFavorite: 1,
   createdAt: '2026-11-12T10:00:00.000',
 );

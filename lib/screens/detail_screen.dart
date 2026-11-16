@@ -206,14 +206,6 @@ class _DetailScreenState extends State<DetailScreen> {
                       avatar: Icon(Icons.timer_outlined, color: accent),
                       label: Text(recipe.prepTime),
                     ),
-                    if (recipe.hasLocation)
-                      Chip(
-                        avatar: Icon(Icons.place_outlined, color: accent),
-                        label: Text(
-                          '${recipe.latitude!.toStringAsFixed(5)}, '
-                          '${recipe.longitude!.toStringAsFixed(5)}',
-                        ),
-                      ),
                   ],
                 ),
                 const SizedBox(height: 24),

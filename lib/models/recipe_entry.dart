@@ -41,12 +41,6 @@ class RecipeEntry {
   /// Cadena vacía si la receta no tiene foto.
   final String imagePath;
 
-  /// Latitud donde se creó la receta; `null` si no se obtuvo ubicación.
-  final double? latitude;
-
-  /// Longitud donde se creó la receta; `null` si no se obtuvo ubicación.
-  final double? longitude;
-
   /// 0 = no favorita, 1 = favorita.
   final int isFavorite;
 
@@ -62,17 +56,12 @@ class RecipeEntry {
     required this.ingredients,
     required this.instructions,
     required this.imagePath,
-    this.latitude,
-    this.longitude,
     this.isFavorite = 0,
     required this.createdAt,
   });
 
   /// Indica si la receta está marcada como favorita.
   bool get favorite => isFavorite == 1;
-
-  /// Indica si la receta tiene coordenadas GPS guardadas.
-  bool get hasLocation => latitude != null && longitude != null;
 
   /// Tag único compartido entre la lista y el detalle para la animación Hero.
   String get heroTag => 'recipe-hero-$id';
@@ -99,8 +88,6 @@ class RecipeEntry {
       'ingredients': ingredients,
       'instructions': instructions,
       'imagePath': imagePath,
-      'latitude': latitude,
-      'longitude': longitude,
       'isFavorite': isFavorite,
       'createdAt': createdAt,
     };
@@ -117,8 +104,6 @@ class RecipeEntry {
       ingredients: map['ingredients'] as String? ?? '',
       instructions: map['instructions'] as String? ?? '',
       imagePath: map['imagePath'] as String? ?? '',
-      latitude: (map['latitude'] as num?)?.toDouble(),
-      longitude: (map['longitude'] as num?)?.toDouble(),
       isFavorite: map['isFavorite'] as int? ?? 0,
       createdAt:
           map['createdAt'] as String? ?? DateTime.now().toIso8601String(),
@@ -135,8 +120,6 @@ class RecipeEntry {
       ingredients: ingredients,
       instructions: instructions,
       imagePath: imagePath,
-      latitude: latitude,
-      longitude: longitude,
       isFavorite: isFavorite ?? this.isFavorite,
       createdAt: createdAt,
     );

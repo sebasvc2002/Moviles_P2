@@ -2,7 +2,7 @@
 
 Aplicación móvil desarrollada con Flutter para crear, guardar, organizar y
 consultar recetas. Incluye almacenamiento local, captura de imágenes,
-dictado por voz, lectura de instrucciones y registro opcional de la ubicación.
+dictado por voz y lectura de instrucciones.
 
 ## Funcionalidades
 
@@ -11,7 +11,6 @@ dictado por voz, lectura de instrucciones y registro opcional de la ubicación.
 - Añadir fotografías desde la cámara o la galería.
 - Dictar ingredientes e instrucciones mediante reconocimiento de voz.
 - Escuchar el contenido de una receta mediante síntesis de voz.
-- Guardar metadatos de ubicación asociados a las recetas.
 - Consultar las recetas desde una interfaz adaptada a dispositivos móviles.
 
 ## Requisitos
@@ -70,15 +69,16 @@ lib/
 ├── database/     # Acceso y operaciones sobre SQLite
 ├── models/       # Modelos de datos de las recetas
 ├── screens/      # Pantallas principales de la aplicación
-├── services/     # Cámara, voz, ubicación y otros servicios
+├── services/     # Cámara, voz y otros servicios
 └── widgets/      # Componentes visuales reutilizables
 ```
 
 ## Permisos
 
-Las funciones de cámara, galería, micrófono, reconocimiento de voz y
-ubicación requieren permisos del sistema operativo. Al utilizar estas
-funciones, concede los permisos solicitados por la aplicación. La
+Las funciones de cámara, galería, micrófono y reconocimiento de voz
+requieren permisos del sistema operativo. Al utilizar estas funciones,
+concede los permisos solicitados por la aplicación. CookBook no solicita
+ni guarda la ubicación del dispositivo. La
 configuración específica de Android e iOS se encuentra en sus respectivos
 directorios nativos.
 
@@ -89,7 +89,6 @@ directorios nativos.
 - `speech_to_text` para el dictado.
 - `flutter_tts` para la lectura de recetas.
 - `permission_handler` para gestionar permisos.
-- `geolocator` para obtener la ubicación.
 
 ## Licencia
 

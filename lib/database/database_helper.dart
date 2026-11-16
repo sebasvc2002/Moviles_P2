@@ -24,7 +24,9 @@ class DatabaseHelper implements RecipeRepository {
   static final DatabaseHelper instance = DatabaseHelper._internal();
 
   static const String _dbName = 'cookbook.db';
-  static const int _dbVersion = 1;
+
+  /// v2: se dejó de guardar la ubicación (columnas latitude/longitude).
+  static const int _dbVersion = 2;
 
   /// Nombre de la tabla de recetas.
   static const String tableRecipes = 'recipes';
@@ -42,14 +44,19 @@ class DatabaseHelper implements RecipeRepository {
     try {
       final dbPath = await getDatabasesPath();
       final path = join(dbPath, _dbName);
-      return await openDatabase(path, version: _dbVersion, onCreate: _onCreate);
+      return await openDatabase(
+        path,
+        version: _dbVersion,
+        onCreate: _onCreate,
+        onUpgrade: _onUpgrade,
+      );
     } catch (e) {
       debugPrint('[DatabaseHelper] Error al abrir la base de datos: $e');
       throw Exception('Error al acceder a la base de datos: $e');
     }
   }
 
-  /// Crea el esquema de la versión 1.
+  /// Crea el esquema actual en una instalación nueva.
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE $tableRecipes (
@@ -60,12 +67,22 @@ class DatabaseHelper implements RecipeRepository {
         ingredients TEXT NOT NULL,
         instructions TEXT NOT NULL,
         imagePath TEXT NOT NULL,
-        latitude REAL,
-        longitude REAL,
         isFavorite INTEGER NOT NULL DEFAULT 0,
         createdAt TEXT NOT NULL
       )
     ''');
+  }
+
+  /// Migra bases creadas por versiones anteriores.
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      // La app ya no usa la ubicación. Se borran las coordenadas guardadas
+      // (las columnas quedan vacías porque SQLite en Android antiguo no
+      // permite DROP COLUMN).
+      await db.execute(
+        'UPDATE $tableRecipes SET latitude = NULL, longitude = NULL',
+      );
+    }
   }
 
   @override

@@ -1,7 +1,7 @@
 /// Formulario de creación de recetas (ruta `/create`).
 ///
 /// **SRP:** coordina la entrada del usuario; cada tarea técnica (fotos,
-/// dictado, ubicación, persistencia) la resuelve un colaborador inyectado.
+/// dictado, persistencia) la resuelve un colaborador inyectado.
 library;
 
 import 'dart:io';
@@ -12,7 +12,6 @@ import 'package:image_picker/image_picker.dart';
 import '../database/database_helper.dart';
 import '../database/recipe_repository.dart';
 import '../models/recipe_entry.dart';
-import '../services/location_service.dart';
 import '../services/media_service.dart';
 import '../services/voice_service.dart';
 import '../widgets/voice_dictation_btn.dart';
@@ -25,8 +24,8 @@ enum _DictationTarget { ingredients, instructions }
 /// `Navigator.pop` para que la lista se recargue.
 ///
 /// **DIP:** depende de abstracciones ([RecipeRepository], [ImageStorage],
-/// [SpeechInput], [LocationProvider]); si no se inyectan se usan las
-/// implementaciones de producción.
+/// [SpeechInput]); si no se inyectan se usan las implementaciones de
+/// producción.
 class FormScreen extends StatefulWidget {
   /// Crea la pantalla. Los parámetros opcionales permiten sustituir las
   /// implementaciones reales (por ejemplo, en pruebas).
@@ -35,7 +34,6 @@ class FormScreen extends StatefulWidget {
     this.repository,
     this.imageStorage,
     this.speechInput,
-    this.locationProvider,
   });
 
   /// Repositorio de recetas; por defecto [DatabaseHelper.instance].
@@ -46,9 +44,6 @@ class FormScreen extends StatefulWidget {
 
   /// Motor de dictado; por defecto [VoiceService].
   final SpeechInput? speechInput;
-
-  /// Fuente de ubicación; por defecto [LocationService].
-  final LocationProvider? locationProvider;
 
   @override
   State<FormScreen> createState() => _FormScreenState();
@@ -65,8 +60,6 @@ class _FormScreenState extends State<FormScreen> {
       widget.repository ?? DatabaseHelper.instance;
   late final ImageStorage _media = widget.imageStorage ?? MediaService();
   late final SpeechInput _voice = widget.speechInput ?? VoiceService();
-  late final LocationProvider _location =
-      widget.locationProvider ?? LocationService();
 
   String _category = kRecipeCategories.first;
   String? _imagePath;
@@ -177,7 +170,7 @@ class _FormScreenState extends State<FormScreen> {
   // Guardado
   // ---------------------------------------------------------------------------
 
-  /// Valida, adjunta la ubicación (si está disponible) y guarda la receta.
+  /// Valida el formulario y guarda la receta.
   Future<void> _save() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     if (_listeningTarget != null) await _voice.stopListening();
@@ -188,9 +181,6 @@ class _FormScreenState extends State<FormScreen> {
     setState(() => _saving = true);
 
     try {
-      // La ubicación es opcional: si falla se guarda sin coordenadas.
-      final position = await _location.getCurrentPosition();
-
       final recipe = RecipeEntry(
         title: _titleCtrl.text.trim(),
         category: _category,
@@ -198,8 +188,6 @@ class _FormScreenState extends State<FormScreen> {
         ingredients: _ingredientsCtrl.text.trim(),
         instructions: _instructionsCtrl.text.trim(),
         imagePath: _imagePath ?? '',
-        latitude: position?.latitude,
-        longitude: position?.longitude,
         createdAt: DateTime.now().toIso8601String(),
       );
 

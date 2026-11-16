@@ -10,8 +10,6 @@
 	<string>Necesitamos acceso al micrófono para dictar ingredientes e instrucciones.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Necesitamos reconocimiento de voz para transcribir tu receta.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Guardamos la ubicación donde creaste o probaste el platillo.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
